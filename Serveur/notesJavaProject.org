@@ -1,0 +1,169 @@
+#+TITLE: notesConstruction project
+
+* Jcommander
+
+http://jcommander.org/
+
+classe interne Options (ou whatever tu call)
+
+annotation
+@Parameter: names, description
+
+
+
+
+#+BEGIN_SRC java
+  import com.beust.jcommander.Parameter;
+
+  public class JCommanderExample {
+      @Parameter
+      private List<String> parameters = new ArrayList<String>();
+
+      @Parameter(names = { "-log", "-verbose" }, description = "Level of verbosity")
+      private Integer verbose = 1;
+
+      @Parameter(names = "-groups", description = "Comma-separated list of group names to be run")
+      private String groups;
+
+      @Parameter(names = "-debug", description = "Debug mode")
+      private boolean debug = false;
+  }
+
+  /////// Dans le main:
+  JCommanderExample jct = new JCommanderExample();
+  String[] argv = { "-log", "2", "-groups", "unit" };
+  new JCommander(jct, argv);
+
+  Assert.assertEquals(jct.verbose.intValue(), 2);
+
+#+END_SRC
+
+
+Pour afficher usage:
+#+BEGIN_SRC java
+  JCommander jcp = new JCommander(JcExample, arguments);
+  if(options.help){
+      jcp.usage();
+      System.exit(0);
+  }
+#+END_SRC
+
+* Threads,
+** Executors
+
+#+BEGIN_SRC java
+
+#+END_SRC
+** divers trhead
+runnable vs extends thread
+
+#+BEGIN_SRC java
+Thread.activeCount();
+
+#+END_SRC
+§LATER: §SEE http://stackoverflow.com/questions/6113746/naming-threads-and-thread-pools-of-executorservice
+* File parsing
+
+http://stackoverflow.com/questions/5965767/performance-of-stringtokenizer-class-vs-split-method-in-java
+** avec buffered reader
+- BufferedReader br = new BufferedReader(new FileReader(file));
+  the readline
+#+BEGIN_SRC java
+   BufferedReader br = new BufferedReader(new FileReader("file.txt"));
+    try {
+        StringBuilder sb = new StringBuilder();
+        String line = br.readLine();
+
+        while (line != null) {
+            sb.append(line);
+            sb.append('\n');
+            line = br.readLine();
+        }
+        String everything = sb.toString();
+    } finally {
+        br.close();
+    }
+#+END_SRC
+
+
+** Scanner
+http://docs.oracle.com/javase/1.5.0/docs/api/java/util/Scanner.html
+
+A simple text scanner which can parse primitive types and strings using regular expressions
+Methods: hasNext[Boolean,Byte,Float,Int, Line] et next[...]
+
+#+BEGIN_SRC java
+Scanner in = new Scanner(new FileReader("filename.txt"));
+// .... use
+in.close();
+#+END_SRC
+* Discoveries
+** TODO à lire
+Java tuts
+
+fair threads? : http://www-sop.inria.fr/mimosa/rp/FairThreads/FTJava/documentation/FairThreads.html
+Time Unit enum!: http://thecodersbreakfast.net/index.php?post/2011/01/04/Au-coeur-du-JDK-%3A-TimeUnit
+TimeUnit.HOURS.toMillis(1), TimeUnit.MINUTES.sleep(1);
+
+
+*** Paths
+
+http://docs.oracle.com/javase/tutorial/essential/io/pathOps.html
+*** concurrency
+http://docs.oracle.com/javase/tutorial/essential/concurrency/sleep.html
+*** Timer
+
+http://stackoverflow.com/questions/2275443/how-to-timeout-a-thread
+http://stackoverflow.com/questions/1453295/timer-timertask-versus-thread-sleep-in-java
+
+**** div
+http://stackoverflow.com/questions/541487/implements-runnable-vs-extends-thread?rq=1
+
+** Dual thread
+
+#+BEGIN_SRC java
+
+new Thread(){
+
+}.start();
+
+#+END_SRC
+
+extends thread.
+si fait run, exécuté dans le code courant
+** Sockets
+#+BEGIN_SRC java
+client.setSoTimeout(3000);
+catch (SocketTimeoutException ste)
+#+END_SRC
+** Tools, extendtion
+générer comment javadoc!
+http://stackoverflow.com/questions/2530043/any-way-to-auto-generate-all-javadoc-comments-in-eclipse
+
+http://jautodoc.sourceforge.net/
+JAutodoc is an Eclipse Plugin for automatically adding Javadoc and file headers to your source code
+
+** Encoding
+Option in strem constructor
+#+BEGIN_SRC java
+inchan = new BufferedReader(new InputStreamReader(
+client.getInputStream(), Charset.forName("UTF-8")
+.newDecoder()));
+outchan = new PrintWriter(new OutputStreamWriter(
+client.getOutputStream(), Charset.forName("UTF-8")
+.newEncoder())
+#+END_SRC
+
+* Idées
+
+traceur:
+recupère le thread courant qui va l'exécuter!!
+** Bonux
+- pririty thread managing
+- profiling
+* Notes pour rapport.
+
+
+Parti pour un système d'uatomate pour vérifier et traiter les commandes reçues par le serveur.
+Thread listeneur attitré.
+Etat changé par manager
